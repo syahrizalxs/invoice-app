@@ -6,7 +6,7 @@
           >Invoices</span
         >
         <span class="text-space-cadet-2 dark:text-slate-300"
-          >{{ filterInvoice?.length }} Invoices</span
+          >{{ filteredInvoice?.length }} Invoices</span
         >
       </div>
       <div class="flex items-center gap-4">
