@@ -5,7 +5,9 @@
         <span class="text-2xl font-semibold dark:text-white text-space-cadet"
           >Invoices</span
         >
-        <span class="text-space-cadet-2 dark:text-slate-300">7 Invoices</span>
+        <span class="text-space-cadet-2 dark:text-slate-300"
+          >{{ filterInvoice?.length }} Invoices</span
+        >
       </div>
       <div class="flex items-center gap-4">
         <CommonDropdown
