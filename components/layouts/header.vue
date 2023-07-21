@@ -3,6 +3,7 @@
     <div class="flex justify-between md:flex-col md:h-full md:pb-5">
       <div
         class="bg-tropical-indigo py-3 px-5 flex items-center justify-center text-white rounded-tr-md rounded-br-md"
+        @click="$router.push('/')"
       >
         ⌘
       </div>
@@ -34,4 +35,8 @@ import { useDark, useToggle } from "@vueuse/core";
 
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
+
+useHead({
+  title: "Invoice App",
+});
 </script>

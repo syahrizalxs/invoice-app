@@ -11,7 +11,7 @@
         class="row-start-2 col-start-1 md:col-start-2 md:row-start-1 flex flex-col"
       >
         <span class="dark:text-slate-300"
-          >Due {{ formatDate(String(invoice.paymentDate)) }}</span
+          >Due {{ formatDate(String(invoice.invoiceDate)) }}</span
         >
         <span class="font-semibold dark:text-white md:hidden">{{
           formatCurrency(total)
@@ -42,8 +42,8 @@ defineComponent({
 
 const total: ComputedRef<number> = computed(() =>
   props.invoice.items.reduce((acc, value) => {
-    return acc + value.total;
+    return acc + value.price * value.qty;
     // eslint-disable-next-line prettier/prettier
-  }, 0)
+  }, 0),
 );
 </script>

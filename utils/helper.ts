@@ -1,4 +1,5 @@
 const formatDate = (date: string): string => {
+  if (!date) return "";
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",
     month: "long",

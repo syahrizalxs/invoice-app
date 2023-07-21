@@ -1,13 +1,13 @@
 <template>
   <div
-    v-if="show"
-    class="fixed left-16 top-0 right-0 bottom-0 h-screen w-screen bg-black bg-opacity-70"
+    :class="{ hidden: !show, block: show }"
+    class="fixed left-0 top-16 md:left-16 md:top-0 right-0 bottom-0 h-screen w-screen bg-black bg-opacity-70"
   >
     <Transition name="slide-fade">
       <div
         v-if="triggerAnimation"
         ref="modalBodyRef"
-        class="absolute p-8 top-0 left-0 h-screen w-1/2 bg-slate-50 flex dark:bg-rich-black bg-opacity-100"
+        class="absolute p-8 top-0 left-0 h-screen w-[calc(100%-2em)] md:w-1/2 xl:w-1/2 2xl:w-1/3 bg-slate-50 flex overflow-y-auto overflow-x-hidden dark:bg-rich-black bg-opacity-100"
       >
         <slot></slot>
       </div>

@@ -15,7 +15,7 @@
         />
         <CommonButton
           icon-class="i-mdi-plus bg-space-cadet rounded-full text-space-cadet"
-          class="text-white bg-tropical-indigo hover:bg-indigo-400"
+          class="text-white bg-tropical-indigo"
           @click="showModal = true"
         >
           New Invoice
@@ -23,22 +23,43 @@
       </div>
     </div>
 
-    <div class="task-list mt-5 grid-cols-1 grid gap-4">
-      <InvoiceCard
-        v-for="invoice in invoices"
+    <div v-if="invoices.length" class="task-list mt-5 grid-cols-1 grid gap-4">
+      <NuxtLink
+        v-for="invoice in filteredInvoice"
         :key="invoice.id"
-        class="flex-col gap-4"
-        :invoice="invoice"
-      />
+        :to="`invoice/${invoice.id}`"
+      >
+        <InvoiceCard
+          class="flex-col gap-4 hover:scale-[1.02] cursor-pointer transition-all"
+          :invoice="invoice"
+        />
+      </NuxtLink>
     </div>
 
+    <span v-if="!invoices.length" class="text-center mt-5 dark:text-white"
+      >there is no data to show</span
+    >
+
     <CommonModal :show="showModal" @close="showModal = false">
-      <span class="font-semibold text-2xl dark:text-white">Add Invoice</span>
+      <div class="flex flex-col gap-10 w-full">
+        <span class="font-semibold text-2xl dark:text-white">Add Invoice</span>
+        <InvoiceForm @close="showModal = false" />
+      </div>
     </CommonModal>
   </section>
 </template>
 <script lang="ts" setup>
+import { Invoice } from "~/composables/useInvoice";
+
 const { options, invoices } = useInvoice();
 const filterInvoice = ref<String | null>(null);
+
 const showModal = ref(false);
+
+const filteredInvoice: ComputedRef<Invoice[]> = computed(() => {
+  if (!filterInvoice.value) return invoices.value;
+  return invoices.value.filter(
+    (invoice) => invoice.status === filterInvoice.value,
+  );
+});
 </script>

@@ -28,6 +28,8 @@
   },
   "dependencies": {
     "@nuxtjs/tailwindcss": "^6.8.0",
-    "@vueuse/core": "^10.2.1"
+    "@vueuse/core": "^10.2.1",
+    "vee-validate": "^4.10.7",
+    "yup": "^1.2.0"
   }
 }

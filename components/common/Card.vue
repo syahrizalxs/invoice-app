@@ -1,6 +1,6 @@
 <template>
   <div
-    class="rounded-md bg-tropical-indigo dark:bg-space-cadet transition-all flex p-5 hover:scale-105"
+    class="rounded-md bg-tropical-indigo dark:bg-space-cadet transition-all flex p-5"
   >
     <slot></slot>
   </div>

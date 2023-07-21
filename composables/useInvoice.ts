@@ -1,30 +1,29 @@
 interface BillInformation {
-  name: String;
-  email: String;
-  address: String;
-  city: String;
-  postCode: String;
-  country: String;
+  name: string;
+  email: string;
+  address: string;
+  city: string;
+  postCode: string;
+  country: string;
 }
 
 interface Bill {
   to: BillInformation;
-  from: Omit<BillInformation, "city" | "postCode" | "country">;
+  from: Omit<BillInformation, "name" | "email">;
 }
 
-interface Items {
-  name: String;
+export interface Items {
+  name: string;
   qty: number;
   price: number;
-  total: number;
 }
 
 export interface Invoice {
   id: string;
   bill: Bill;
   invoiceDate: Date;
-  paymentDate: Date;
-  projectDescription: String;
+  paymentTerms: string;
+  projectDescription: string;
   items: Items[];
   status: "paid" | "pending" | "draft";
 }
@@ -34,7 +33,13 @@ export interface Option {
   value?: string;
 }
 
+const invoices = ref<Invoice[]>([]);
+
 export const useInvoice = () => {
+  // const storageInvoices = useStorage<Invoice[]>("invoices", [], localStorage, {
+  //   mergeDefaults: true,
+  // });
+
   const options: Option[] = [
     {
       label: "Draft",
@@ -50,111 +55,51 @@ export const useInvoice = () => {
     },
   ];
 
-  const invoices = ref<Invoice[]>([
-    {
-      id: "RT3080",
-      bill: {
-        to: {
-          name: "John Doe",
-          email: "JohnDoe@anon.com",
-          address: "Jl. Kuningan Barat",
-          postCode: "13790",
-          country: "Indonesia",
-          city: "Jakarta",
-        },
-        from: {
-          name: "Jane Doe",
-          email: "janedoe@anon.com",
-          address: "Jl. tendean",
-        },
-      },
-      invoiceDate: new Date(),
-      paymentDate: new Date(),
-      projectDescription: "Project for E-Commerce Campaign",
-      items: [
-        {
-          name: "Banner",
-          qty: 1,
-          price: 2000,
-          total: 2000,
-        },
-      ],
-      status: "draft",
-    },
-    {
-      id: "RT3080",
-      bill: {
-        to: {
-          name: "John Doe",
-          email: "JohnDoe@anon.com",
-          address: "Jl. Kuningan Barat",
-          postCode: "13790",
-          country: "Indonesia",
-          city: "Jakarta",
-        },
-        from: {
-          name: "Jane Doe",
-          email: "janedoe@anon.com",
-          address: "Jl. tendean",
-        },
-      },
-      invoiceDate: new Date(),
-      paymentDate: new Date(),
-      projectDescription: "Project for E-Commerce Campaign",
-      items: [
-        {
-          name: "Banner",
-          qty: 1,
-          price: 2000,
-          total: 2000,
-        },
-      ],
-      status: "paid",
-    },
-    {
-      id: "RT3080",
-      bill: {
-        to: {
-          name: "John Doe",
-          email: "JohnDoe@anon.com",
-          address: "Jl. Kuningan Barat",
-          postCode: "13790",
-          country: "Indonesia",
-          city: "Jakarta",
-        },
-        from: {
-          name: "Jane Doe",
-          email: "janedoe@anon.com",
-          address: "Jl. tendean",
-        },
-      },
-      invoiceDate: new Date(),
-      paymentDate: new Date(),
-      projectDescription: "Project for E-Commerce Campaign",
-      items: [
-        {
-          name: "Banner",
-          qty: 1,
-          price: 2000,
-          total: 2000,
-        },
-      ],
-      status: "pending",
-    },
-  ]);
-
   const addInvoice = (invoice: Invoice) => {
-    const newInvoices = [...invoices.value, invoice];
-    localStorage.setItem("invoices", JSON.stringify(newInvoices));
+    invoices.value.push(invoice);
+    localStorage.removeItem("invoces");
+    localStorage.setItem("invoices", JSON.stringify(invoices.value));
+  };
+
+  const editInvoice = (id: string, invoice: Invoice) => {
+    const result = invoices.value.findIndex((item) => item.id === id);
+    invoices.value.splice(result, 1);
+
+    invoices.value = [...invoices.value, invoice];
+    localStorage.removeItem("invoices");
+    localStorage.setItem("invoices", JSON.stringify(invoices.value));
+  };
+
+  const deleteInvoice = (id: string) => {
+    const result = invoices.value.findIndex((item) => item.id === id);
+    invoices.value.splice(result, 1);
+
+    localStorage.removeItem("invoices");
+    localStorage.setItem("invoices", JSON.stringify(invoices.value));
+  };
+
+  const getInvoice = (id: string): Invoice => {
+    if (!invoices.value) return {} as Invoice;
+    return invoices?.value?.filter((item) => item.id === id)[0];
+  };
+
+  const changeStatusInvoice = (
+    id: string,
+    status: "draft" | "paid" | "pending",
+  ) => {
+    const result = invoices.value.find((item) => item.id === id)!;
+    const filteredInvoice = invoices.value.filter((item) => item.id !== id);
+    invoices.value = [...filteredInvoice, { ...result, status }];
+
+    localStorage.removeItem("invoices");
+
+    localStorage.setItem("invoices", JSON.stringify(invoices.value));
   };
 
   onMounted(() => {
-    const storageInvoices: Invoice[] = JSON.parse(
-      localStorage.getItem("invoices") || "{}"
-    );
-
-    if (Object.keys(storageInvoices).length !== 0) {
-      invoices.value = storageInvoices;
+    if (process.client) {
+      const storage = JSON.parse(localStorage.getItem("invoices")!) || [];
+      invoices.value = storage;
     }
   });
 
@@ -162,6 +107,10 @@ export const useInvoice = () => {
     options,
     invoices,
     addInvoice,
+    getInvoice,
+    editInvoice,
+    deleteInvoice,
+    changeStatusInvoice,
   };
 };
 
